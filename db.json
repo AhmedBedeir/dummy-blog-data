@@ -25,9 +25,7 @@
         "ES6",
         "destructuring"
       ],
-      "likes": [
-        2
-      ],
+      "likes": [],
       "publishDate": "6/15/2025",
       "author": {
         "fullName": "bedeir",
@@ -80,7 +78,7 @@
       "id": 4
     },
     {
-      "title": "RESTful API Design with Node.js and Express",
+      "title": "RESTful API Design with Node.js and Express,  Let's explore best practices using Node.js and Express.",
       "content": "# RESTful API Design with Node.js and Express\n\nBuilding well-designed REST APIs is crucial for modern web applications. Let's explore best practices using Node.js and Express.\n\n## Setting Up Express\n\nStart with a basic Express server:\n\n```javascript\nconst express = require('express');\nconst app = express();\n\napp.use(express.json());\napp.use(express.urlencoded({ extended: true }));\n\nconst PORT = process.env.PORT || 3000;\n\napp.listen(PORT, () => {\n    console.log(`Server running on port ${PORT}`);\n});\n```\n\n## REST Principles\n\n### 1. Resource-Based URLs\n\nStructure URLs around resources, not actions:\n\n```javascript\n// Good\nGET /api/users          // Get all users\nGET /api/users/:id      // Get specific user\nPOST /api/users         // Create new user\nPUT /api/users/:id      // Update user\nDELETE /api/users/:id   // Delete user\n\n// Bad\nGET /api/getUsers\nPOST /api/createUser\n```\n\n### 2. HTTP Status Codes\n\nUse appropriate status codes:\n\n```javascript\napp.get('/api/users/:id', async (req, res) => {\n    try {\n        const user = await User.findById(req.params.id);\n        \n        if (!user) {\n            return res.status(404).json({ error: 'User not found' });\n        }\n        \n        res.status(200).json(user);\n    } catch (error) {\n        res.status(500).json({ error: 'Internal server error' });\n    }\n});\n```\n\n## Middleware for Common Functionality\n\nCreate reusable middleware:\n\n```javascript\n// Logging middleware\nconst logger = (req, res, next) => {\n    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);\n    next();\n};\n\n// Authentication middleware\nconst authenticate = (req, res, next) => {\n    const token = req.header('Authorization')?.replace('Bearer ', '');\n    \n    if (!token) {\n        return res.status(401).json({ error: 'Access denied' });\n    }\n    \n    try {\n        const decoded = jwt.verify(token, process.env.JWT_SECRET);\n        req.user = decoded;\n        next();\n    } catch (error) {\n        res.status(400).json({ error: 'Invalid token' });\n    }\n};\n\napp.use(logger);\napp.use('/api/protected', authenticate);\n```\n\n## Error Handling\n\nImplement centralized error handling:\n\n```javascript\n// Error handling middleware\nconst errorHandler = (err, req, res, next) => {\n    console.error(err.stack);\n    \n    if (err.name === 'ValidationError') {\n        return res.status(400).json({\n            error: 'Validation Error',\n            details: err.message\n        });\n    }\n    \n    res.status(500).json({ error: 'Something went wrong!' });\n};\n\napp.use(errorHandler);\n```\n\n## API Documentation\n\nDocument your API endpoints:\n\n```javascript\n/**\n * @route GET /api/users\n * @desc Get all users\n * @access Public\n * @params page (query) - Page number for pagination\n * @params limit (query) - Number of items per page\n */\napp.get('/api/users', async (req, res) => {\n    const { page = 1, limit = 10 } = req.query;\n    // Implementation here\n});\n```\n\nFollowing these patterns will help you build maintainable and scalable REST APIs.",
       "readTime": "2 min read",
       "category": "Node.js",
@@ -102,7 +100,7 @@
       "id": 5
     },
     {
-      "title": "Python Data Analysis with Pandas",
+      "title": "Python Data Analysis with Pandas, Let's explore essential techniques.",
       "content": "# Python Data Analysis with Pandas\n\nPandas is the go-to library for data analysis in Python. Let's explore essential techniques for working with data.\n\n## Getting Started\n\nImport pandas and load your data:\n\n```python\nimport pandas as pd\nimport numpy as np\n\n# Read data from various sources\ndf = pd.read_csv('data.csv')\ndf = pd.read_excel('data.xlsx')\ndf = pd.read_json('data.json')\n```\n\n## Data Exploration\n\nUnderstand your data structure:\n\n```python\n# Basic information\nprint(df.head())        # First 5 rows\nprint(df.info())        # Data types and memory usage\nprint(df.describe())    # Statistical summary\nprint(df.shape)         # Dimensions\n\n# Check for missing values\nprint(df.isnull().sum())\nprint(df.duplicated().sum())\n```\n\n## Data Cleaning\n\nClean and prepare your data:\n\n```python\n# Handle missing values\ndf.dropna()                 # Remove rows with any NaN\ndf.fillna(0)               # Fill NaN with 0\ndf.fillna(df.mean())       # Fill with column mean\n\n# Remove duplicates\ndf.drop_duplicates()\n\n# Data type conversion\ndf['date'] = pd.to_datetime(df['date'])\ndf['category'] = df['category'].astype('category')\n```\n\n## Data Manipulation\n\nTransform and filter your data:\n\n```python\n# Filtering\nhigh_values = df[df['price'] > 100]\nrecent_data = df[df['date'] > '2023-01-01']\n\n# Grouping and aggregation\nsummary = df.groupby('category').agg({\n    'price': ['mean', 'median', 'std'],\n    'quantity': 'sum'\n})\n\n# Creating new columns\ndf['total'] = df['price'] * df['quantity']\ndf['price_category'] = df['price'].apply(\n    lambda x: 'expensive' if x > 100 else 'affordable'\n)\n```\n\n## Advanced Operations\n\n### Merging DataFrames\n\n```python\n# Different types of joins\nmerged = pd.merge(df1, df2, on='id', how='inner')\nmerged = pd.merge(df1, df2, on='id', how='left')\nmerged = pd.merge(df1, df2, on='id', how='outer')\n```\n\n### Pivot Tables\n\n```python\npivot = df.pivot_table(\n    values='sales',\n    index='month',\n    columns='product',\n    aggfunc='sum',\n    fill_value=0\n)\n```\n\n### Time Series Analysis\n\n```python\n# Set datetime index\ndf.set_index('date', inplace=True)\n\n# Resample time series data\nmonthly_sales = df.resample('M')['sales'].sum()\nquarterly_avg = df.resample('Q')['price'].mean()\n\n# Rolling windows\ndf['rolling_avg'] = df['price'].rolling(window=7).mean()\n```\n\n## Performance Tips\n\nOptimize your pandas operations:\n\n```python\n# Use vectorized operations instead of loops\ndf['new_col'] = df['col1'] + df['col2']  # Good\n# avoid: df.apply(lambda row: row['col1'] + row['col2'], axis=1)\n\n# Use query() for complex filtering\nresult = df.query('price > 100 and category == \"electronics\"')\n\n# Use categorical data types for repeated strings\ndf['category'] = df['category'].astype('category')\n```\n\nPandas provides powerful tools for data analysis. Practice with real datasets to master these techniques!",
       "readTime": "2 min read",
       "category": "Python",
@@ -113,9 +111,7 @@
         "dataframes",
         "pandas"
       ],
-      "likes": [
-        2
-      ],
+      "likes": [],
       "publishDate": "6/15/2025",
       "author": {
         "fullName": "bedeir",
